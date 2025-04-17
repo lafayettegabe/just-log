@@ -14,7 +14,7 @@ app = FastAPI()
 async def receive_data(request: Request):
     body = await request.json()
     logger.info(f"Received data: {body}")
-    return {"status": "success", "message": "Data received and logged"}
+    return {"Status": 0, "Data": {"message": "Data received and logged"}}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

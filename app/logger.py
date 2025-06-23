@@ -18,7 +18,7 @@ class JsonFormatter(logging.Formatter):
         )
 
 
-def configure_logging(log_file: str = "app.log"):
+def configure_logging(log_file: str = "/var/log/just-log/app.log"):
     root = logging.getLogger()
     root.setLevel(logging.INFO)
 

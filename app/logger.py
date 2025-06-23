@@ -8,14 +8,21 @@ from typing import Annotated
 
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
-        return json.dumps(
-            {
-                "timestamp": datetime.fromtimestamp(record.created).isoformat(),
-                "level": record.levelname,
-                "logger": record.name,
-                "message": record.getMessage(),
-            }
-        )
+        log_record = {
+            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+        }
+
+        data = getattr(record, "data", None)
+        if data is not None:
+            log_record["data"] = data
+
+        if record.exc_info:
+            log_record["exc_info"] = self.formatException(record.exc_info)
+
+        return json.dumps(log_record, ensure_ascii=False)
 
 
 def configure_logging(log_file: str = "/var/log/just-log/app.log"):
@@ -30,7 +37,7 @@ def configure_logging(log_file: str = "/var/log/just-log/app.log"):
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
 
-    file_handler = logging.FileHandler(log_file)
+    file_handler = logging.FileHandler(log_file, encoding="utf-8")
     file_handler.setFormatter(formatter)
 
     root.addHandler(stream_handler)
@@ -42,3 +49,4 @@ def get_logger() -> Logger:
 
 
 logger_dependency = Annotated[Logger, Depends(get_logger)]
+

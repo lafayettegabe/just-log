@@ -26,6 +26,7 @@ def configure_logging(log_file: str = "app.log"):
         root.removeHandler(handler)
 
     formatter = JsonFormatter()
+
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
 
